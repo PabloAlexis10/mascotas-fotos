@@ -1,4 +1,24 @@
+"use client";
+
+import { useState } from "react";
+
 export default function RegistroPage() {
+  const [mensaje, setMensaje] = useState("");
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+
+    const res = await fetch("/api/registro", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    setMensaje(data.message);
+  }
+
   return (
     <main
       style={{
@@ -30,19 +50,21 @@ export default function RegistroPage() {
           y el acceso a futuras compras e historial.
         </p>
 
-        <form style={{ display: "grid", gap: "16px" }}>
+        <form onSubmit={handleSubmit} style={{ display: "grid", gap: "16px" }}>
           <input
+            name="nombre"
             type="text"
             placeholder="Nombre"
             style={{ padding: "14px", borderRadius: "10px", border: "1px solid #cbd5e1" }}
           />
           <input
+            name="email"
             type="email"
             placeholder="Correo electrónico"
             style={{ padding: "14px", borderRadius: "10px", border: "1px solid #cbd5e1" }}
           />
           <button
-            type="button"
+            type="submit"
             style={{
               background: "#0f766e",
               color: "white",
@@ -55,6 +77,12 @@ export default function RegistroPage() {
             Continuar
           </button>
         </form>
+
+        {mensaje && (
+          <p style={{ marginTop: "18px", color: "#0f766e", fontWeight: 600 }}>
+            {mensaje}
+          </p>
+        )}
       </div>
     </main>
   );
